@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
-const  validator = require('validator');
+const validator = require('validator');
+
 const userScheam = new mongoose.Schema({
 
   name: {
@@ -31,6 +32,11 @@ const userScheam = new mongoose.Schema({
       },
       message :'passwords are not the same'
     }
+  },
+  role: {
+    type: String,
+    enum:['amdin','user'],
+    default:'user',
   }
   ,
   passwordChangedAt : Date,
