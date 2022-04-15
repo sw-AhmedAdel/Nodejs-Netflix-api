@@ -48,7 +48,7 @@ function sendProdError(err ,res) {
 
 function handelErrorMiddleware(err , req , res, next) {
   err.status = err.status || 'fail';
-  err.stackCode = err.statusCode || 500;
+  err.statusCode = err.statusCode || 500;
   if( process.env.NODE_ENV === 'development'){
     sendDevError(err , res);
 

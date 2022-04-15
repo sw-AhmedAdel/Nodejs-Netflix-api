@@ -8,7 +8,7 @@ const userScheam = new mongoose.Schema({
   name: {
     type: String,
     required:[true, 'Please provide your name'],
-    unique:true,
+   // unique:true,
     minlength:[3, 'Name must be more or equal 3 chars'],
     maxlength:[20, 'Name must be less or equal 20 chars'],
   },
@@ -37,7 +37,7 @@ const userScheam = new mongoose.Schema({
   },
   role: {
     type: String,
-    enum:['amdin','user'],
+    enum:['admin','user'],
     default:'user',
   }
   ,
@@ -55,25 +55,26 @@ const userScheam = new mongoose.Schema({
    toObject:{virtuals : true}
 })
 
-/*
+
 userScheam.methods.toJSON = function(){
   const user = this;
   const userObject = user.toObject();
   delete userObject.password;
   delete userObject.passwordConfirm;
   return userObject;
-}*/
+}
 
 
 
 userScheam.methods.changePasswordAfter = function(jwtTime) {
-  if(this.changePasswordAfter) {
-
-    const userPasswordTime = parseInt(this.candidatePassword.getTime() /1000 , 10);
-    return jwtTime < userPasswordTime
+  const user = this;
+  if(user.passwordChangedAt) {
+  const userPasswordTime = parseInt(user.passwordChangedAt.getTime() /1000 , 10);
+  return jwtTime < userPasswordTime
   }
   return false;
 }
+
 
 userScheam.methods.createverificationToken = async function(){
   const user = this;
@@ -93,11 +94,11 @@ userScheam.methods.createpasswordResetToken = async function(){
 }
 
 
-userScheam.methods.comparePassword = function(candidatePassword , userPassword) {
+userScheam.methods.comparePassword =async  function(candidatePassword , userPassword) {
   return await bcrypt.compare(candidatePassword , userPassword);
 }
 
-userScheam.statics.findByrCedenitals = function(email , password) {
+userScheam.statics.findByrCedenitals = async function(email , password) {
   const user = await User.findOne({
     email,
   })
@@ -111,15 +112,16 @@ userScheam.statics.findByrCedenitals = function(email , password) {
   return user;
 }
 
-userScheam.methods.getAuthToken = function (){
+userScheam.methods.getAuthToken = function() {
   const user = this;
-  const token = jwt.verify({_id : user._id.toString()}, process.env.JWT_SECRET , {expiresin :'90d'});
-  return token
+  const token = jwt.sign({_id : user._id.toString()}, process.env.JWT_SECRET ,{expiresIn:process.env.JWT_EXPIRES_IN})
+  return token;
 }
+
 
 userScheam.pre('save' , async function(next){
   const user = this;
-  if(user.isNew || !user.ismMdified ('password')){
+  if(user.isNew || !user.isModified ('password')){
     return next();
   }
   this.passwordChangedAt = Date.now() - 1000;
@@ -128,9 +130,9 @@ userScheam.pre('save' , async function(next){
 
 userScheam.pre('save' , async function(next){
   const user = this;
-  if(user.ismMdified ('password')) {
+  if(user.isModified ('password')) {
     user.password = await bcrypt.hash(user.password , 12);
-    user.passwordConfirm = user.passwordConfirm;
+    user.passwordConfirm = user.password;
   }
   next();
 })

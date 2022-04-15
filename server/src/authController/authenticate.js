@@ -17,7 +17,7 @@ async function authenticate (req ,res, next) {
   if(!user) {
     return next(new appError('The user belonging to this token does no longer exist.',401));
   }
-  if(!await user.changePasswordAfter(decoded.iat)){
+  if( user.changePasswordAfter(decoded.iat)){
     return next ( new appError('User recently changed password! Please log in again.', 401));
   }
   req.user = user;
