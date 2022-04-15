@@ -4,7 +4,8 @@
   "description": "",
   "main": "src/server.js",
   "scripts": {
-    "start": "nodemon src/server.js"
+    "start": "node src/server.js",
+    "watch": "nodemon src/server.js"
   },
   "keywords": [],
   "author": "",
@@ -12,6 +13,10 @@
   "dependencies": {
     "dotenv": "^16.0.0",
     "express": "^4.17.3",
-    "mongoose": "^6.2.9"
+    "jsonwebtoken": "^8.5.1",
+    "mongoose": "^6.3.0",
+    "uninstall": "^0.0.0",
+    "validate": "^5.2.0",
+    "validator": "^13.7.0"
   }
 }
