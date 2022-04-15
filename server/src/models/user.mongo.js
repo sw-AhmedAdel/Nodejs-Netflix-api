@@ -1,6 +1,8 @@
 const mongoose = require('mongoose');
-const validator = require('validator');
-
+const validator = require('validator'); 
+const jwt = require('jsonwebtoken');
+const crypto= require('crypto'); 
+const bcrypt = require('bcrypt');
 const userScheam = new mongoose.Schema({
 
   name: {
@@ -43,12 +45,100 @@ const userScheam = new mongoose.Schema({
   passwordResetToken : String ,
   passwordResetExpires : Date,
   verificationToken: String,
+  active: {
+    type: Boolean,
+    default: true,
+  }
 }, {
    timestamps: true,
    toJSON: {virtuals : true},
    toObject:{virtuals : true}
 })
 
+/*
+userScheam.methods.toJSON = function(){
+  const user = this;
+  const userObject = user.toObject();
+  delete userObject.password;
+  delete userObject.passwordConfirm;
+  return userObject;
+}*/
+
+
+
+userScheam.methods.changePasswordAfter = function(jwtTime) {
+  if(this.changePasswordAfter) {
+
+    const userPasswordTime = parseInt(this.candidatePassword.getTime() /1000 , 10);
+    return jwtTime < userPasswordTime
+  }
+  return false;
+}
+
+userScheam.methods.createverificationToken = async function(){
+  const user = this;
+  const token = crypto.randomBytes(32).toString('hex');
+  user.verificationToken  = crypto.createHash('sha256').update(token).digest('hex');
+  await user.save()
+  return token;
+}
+
+userScheam.methods.createpasswordResetToken = async function(){
+  const user = this;
+  const token = crypto.randomBytes(32).toString('hex');
+  user.passwordResetToken = crypto.createHash('sha256').update(token).digest('sha256');
+  user.passwordResetExpires = Date.now + 10 * 60 *100;
+  await user.save();
+  return token;
+}
+
+
+userScheam.methods.comparePassword = function(candidatePassword , userPassword) {
+  return await bcrypt.compare(candidatePassword , userPassword);
+}
+
+userScheam.statics.findByrCedenitals = function(email , password) {
+  const user = await User.findOne({
+    email,
+  })
+  if(!user) {
+    return false;
+  }
+  const isMatch = await bcrypt.compare(password , user.password);
+  if(!isMatch){
+    return false;
+  }
+  return user;
+}
+
+userScheam.methods.getAuthToken = function (){
+  const user = this;
+  const token = jwt.verify({_id : user._id.toString()}, process.env.JWT_SECRET , {expiresin :'90d'});
+  return token
+}
+
+userScheam.pre('save' , async function(next){
+  const user = this;
+  if(user.isNew || !user.ismMdified ('password')){
+    return next();
+  }
+  this.passwordChangedAt = Date.now() - 1000;
+  next();
+})
+
+userScheam.pre('save' , async function(next){
+  const user = this;
+  if(user.ismMdified ('password')) {
+    user.password = await bcrypt.hash(user.password , 12);
+    user.passwordConfirm = user.passwordConfirm;
+  }
+  next();
+})
+
+userScheam.pre(/^find/ , function(next) {
+  this.find({active : {$ne : false}})
+  next();
+})
 
 const User=  mongoose.model('User' , userScheam);
 module.exports = User;
