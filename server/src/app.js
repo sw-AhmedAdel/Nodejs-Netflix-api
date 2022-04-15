@@ -1,7 +1,7 @@
 const express = require('express');
 const app = express();
 const cookieParser = require('cookie-parser');
-
+const handelErrorMiddleware = require('./handelErros/handel.middlware.error');
 const rateLimit = require('express-rate-limit');
 const helmet = require('helmet');
 const mongoSanitize = require('express-mongo-sanitize');
@@ -23,8 +23,13 @@ app.use(hpp({ //
 }))
 
 app.use(express.json());
-app.use(cookieParser(process.env.JWT_SECRET)); // maek cookie more secure
-//to get the cookie it will be attached on the res.signedCookies
+app.use(cookieParser(process.env.JWT_SECRET)); 
 app.use(express.json());
+
+app.all('*', (req , res ,next) => { 
+  return next(new appError(`could not find ${req.originalUrl} on this server`, 404));
+})
+
+app.use(handelErrorMiddleware);
 
 module.exports= app;
