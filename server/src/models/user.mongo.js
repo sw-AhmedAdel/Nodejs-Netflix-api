@@ -41,6 +41,21 @@ const userScheam = new mongoose.Schema({
     default:'user',
   }
   ,
+  myFav:[
+    {
+      fav:{
+        type : mongoose.Schema.Types.ObjectId,
+        required:true,
+        ref:'Movie',
+      }
+    }
+  ]
+  ,
+  isVrified :{
+    type:Boolean,
+    default: false,
+  },
+  Vrified:Date,
   passwordChangedAt : Date,
   passwordResetToken : String ,
   passwordResetExpires : Date,
@@ -87,8 +102,8 @@ userScheam.methods.createverificationToken = async function(){
 userScheam.methods.createpasswordResetToken = async function(){
   const user = this;
   const token = crypto.randomBytes(32).toString('hex');
-  user.passwordResetToken = crypto.createHash('sha256').update(token).digest('sha256');
-  user.passwordResetExpires = Date.now + 10 * 60 *100;
+  user.passwordResetToken = crypto.createHash('sha256').update(token).digest('hex');
+  user.passwordResetExpires = Date.now() + 10 * 60 *100;
   await user.save();
   return token;
 }

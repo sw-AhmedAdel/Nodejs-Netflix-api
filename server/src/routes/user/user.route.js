@@ -9,20 +9,28 @@ const {
   httpLogout,
   httpGetSingleUser,
   httpUpdateUser,
-  httpLoginUser
+  httpLoginUser,
+  
 } = require('./user.controller');
+
+const {
+  httpForgotPassword,
+  httpResetPassword,
+  httpUpdatePassword
+} = require('../../password/password');
 
 const authenticate = require('../../authController/authenticate');
 const authorized = require('../../authController/authorized');
 
-
 userRoute.post('/signup' , catchAsync( httpCreateUser));
 userRoute.post('/login' , catchAsync(httpLoginUser));
+userRoute.post('/forgotpassword' ,  catchAsync(httpForgotPassword));
+userRoute.patch('/resetpassword/:token' , catchAsync(httpResetPassword));
 
 userRoute.use(catchAsync(authenticate))
-
 userRoute.get('/get/user/:userid' , catchAsync( httpGetSingleUser));
 userRoute.patch('/updateme' , catchAsync( httpUpdateUser));
+userRoute.patch('/update/my/password', catchAsync(httpUpdatePassword));
 userRoute.delete('/deleteme' ,  catchAsync(httpDeleteUser));
 userRoute.get('/logout' ,catchAsync( httpLogout));
 
