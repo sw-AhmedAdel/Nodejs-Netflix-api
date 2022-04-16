@@ -2,6 +2,9 @@ const express = require('express');
 const userRoute = express.Router();
 
 const catchAsync = require('../../authController/catchAsync');
+const authenticate = require('../../authController/authenticate');
+const authorized = require('../../authController/authorized');
+
 const {
   httpCreateUser,
   httpDeleteUser,
@@ -10,7 +13,7 @@ const {
   httpGetSingleUser,
   httpUpdateUser,
   httpLoginUser,
-  
+  httpGetUserStats,
 } = require('./user.controller');
 
 const {
@@ -19,8 +22,6 @@ const {
   httpUpdatePassword
 } = require('../../password/password');
 
-const authenticate = require('../../authController/authenticate');
-const authorized = require('../../authController/authorized');
 
 userRoute.post('/signup' , catchAsync( httpCreateUser));
 userRoute.post('/login' , catchAsync(httpLoginUser));
@@ -36,7 +37,7 @@ userRoute.get('/logout' ,catchAsync( httpLogout));
 
 userRoute.use(authorized('admin'));
 userRoute.get('/', catchAsync( httpGetALlUsers));
-
+userRoute.get('/stats/:year', catchAsync(httpGetUserStats));
 module.exports = userRoute;
 
 

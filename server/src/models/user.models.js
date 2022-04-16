@@ -36,12 +36,45 @@ async function DeleteUser (id) {
   
 }
 
+async function GetUserStats () {
+  const users = await User.aggregate([
+
+    {
+    
+      $unwind :'$createdAt'
+      }
+      ,
+      {
+        $group: {
+          _id: {$month: '$createdAt'},//means get me each tour in the same month and put it in group
+          numOfUsers:{$sum: 1}, // count each tour in group
+        }
+      }
+      ,
+      {
+        $addFields:{
+          month:'$_id'
+        }
+      }
+      ,
+      {
+        $project:{
+          _id:0
+        }
+      }
+    
+  
+  ])
+  return users;
+}
+
 module.exports = {
   CreateUser,
   GetALlUsers,
   FindUser,
   UpdateUser,
   DeleteUser,
-  findByrCedenitals
+  findByrCedenitals,
+  GetUserStats
 
 }

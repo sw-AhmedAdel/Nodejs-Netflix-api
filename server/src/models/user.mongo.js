@@ -63,9 +63,10 @@ const userScheam = new mongoose.Schema({
   active: {
     type: Boolean,
     default: true,
-  }
+  },
+  createdAt:Date
 }, {
-   timestamps: true,
+  
    toJSON: {virtuals : true},
    toObject:{virtuals : true}
 })

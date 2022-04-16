@@ -43,12 +43,17 @@ const movieSchema = new mongoose.Schema({
   isSeries:{
     type:Boolean,
     default: false
+  },
+
+  rating:{
+    type:Number,
+    default:0
   }
 
 
 }, {
   timestamps:true,
-  toJSON:{virtuals : tue},
+  toJSON:{virtuals : true},
   toObject:{virtuals:true}
 })
 

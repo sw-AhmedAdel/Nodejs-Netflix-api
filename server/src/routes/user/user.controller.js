@@ -4,7 +4,8 @@ const {
   UpdateUser,
   DeleteUser,
   GetALlUsers,
-  findByrCedenitals
+  findByrCedenitals,
+  GetUserStats
 } = require('../../models/user.models');
 const sendCookieVieRespond = require('../../authController/cookie');
 const appError = require('../../handelErros/class.handel.errors');
@@ -109,6 +110,15 @@ function httpLogout(req , res ) {
    } 
 }
 
+async function httpGetUserStats(req ,res ,next) {
+
+  const users = await GetUserStats();
+  return res.status(200).json({
+    status:'success',
+    data:users
+  })
+}
+
 module.exports = {
   httpCreateUser,
   httpDeleteUser,
@@ -116,5 +126,6 @@ module.exports = {
   httpLogout,
   httpGetSingleUser,
   httpUpdateUser,
-  httpLoginUser
+  httpLoginUser,
+  httpGetUserStats
 }
