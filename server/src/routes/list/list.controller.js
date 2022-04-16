@@ -4,6 +4,7 @@ const {
   UpdateList,
   DeleteList,
   FindList,
+  GetListsMoviesInHomePage
 } = require('../../models/list.models');
 const appError = require('../../handelErros/class.handel.errors')
 const filterFeaturs = require('../../services/class.filter')
@@ -137,6 +138,16 @@ async function httpRemoveMovieFromList(req ,res , next){
 }
 
 
+async function httpGetListsMoviesInHomePage(req ,res ,next) {
+  const {type , genre} = req.query;
+  const lists = await GetListsMoviesInHomePage(type , genre);
+  return res.status(200).json({
+    status:'success',
+    reaults:lists.length,
+    data: lists
+  })
+}
+
 module.exports = {
   httpCreatNewList,
   httpGeTAllList,
@@ -145,5 +156,6 @@ module.exports = {
   httpFindList,
   httpAddMovieToList,
   httpRemoveMovieFromList,
-  httpRemoveMovieFromList
+  httpRemoveMovieFromList,
+  httpGetListsMoviesInHomePage
 }

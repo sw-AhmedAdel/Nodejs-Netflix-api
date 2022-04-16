@@ -12,13 +12,15 @@ const {
   httpDeleteList,
   httpFindList,
   httpAddMovieToList,
-  httpRemoveMovieFromList
+  httpRemoveMovieFromList,
+  httpGetListsMoviesInHomePage
 } =require('./list.controller');
 
 
 listRoute.route(catchAsync(authenticate))
 listRoute.get('/', catchAsync(httpGeTAllList));
 listRoute.get('/list/:listid' , catchAsync(httpFindList))
+listRoute.get('/home', catchAsync(httpGetListsMoviesInHomePage));
 
 listRoute.route(authorized('admin'));
 listRoute.post('/', catchAsync(httpCreatNewList));
