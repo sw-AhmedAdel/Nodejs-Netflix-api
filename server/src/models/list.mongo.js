@@ -13,12 +13,26 @@ const listSchema = new mongoose.Schema({
     type:String,
     required:[true,'Movie must has a cover image'],
   },
-  content:[Array],// will have all movies id like just hooro movies
+  content:[
+  {
+      type: mongoose.Schema.Types.ObjectId,
+      required:true,
+      ref:'Movie',  
+  }
+],// will have all movies id like just hooro movies
 
 }, {
   timestamps: true,
   toJSON:{virtuals: true},
   toObject:{virtuals: true },
+})
+
+listSchema.pre(/^find/ , function(next) {
+  this.populate({
+    path:'content',
+    select:'title movieImage rating isSeries'
+  })
+  next();
 })
 
 const List = mongoose.model('List', listSchema);
