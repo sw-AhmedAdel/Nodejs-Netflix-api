@@ -38,9 +38,9 @@ async function DeleteMovie(id ){
 }
 
 async function GetRandomMovieOrSeries(type){
- let movie;
- if(type ==='series') {
-  
+ 
+  let movie;
+ if(type ==='serios') {  
   movie = await Movie.aggregate([
     {
       $match: {isSeries: true}},
@@ -57,6 +57,74 @@ async function GetRandomMovieOrSeries(type){
  return movie;
 }
 
+async function GetMoviesGroupsByRatings() {
+  const movies = Movie.aggregate([
+
+    {
+      $match:{
+        rating : {
+          $gte:0
+        }
+      }
+    },
+    {
+      $group:{
+        _id:'$rating',
+        Numbers: {$sum:1},
+        Names: {$push:'$title'},   
+      }
+    },
+    {
+      $addFields:{
+        ratings:'$_id',
+      }
+    },
+    {
+      $project:{
+        _id:0
+      }
+    },
+    {
+      $sort:{
+        ratings:-1
+      }
+    }
+  ])
+  return movies;
+}
+
+async function GetMoviesGroupsByGenre () {
+  const movies = Movie.aggregate([
+      {
+        $unwind:'$genre'
+      },
+      {
+        $group:{
+          _id:'$genre',
+          Numbers: {$sum:1},
+          Names: {$push:'$title'},   
+        }
+      },
+      {
+        $addFields:{
+          genre:'$_id',
+        }
+      },
+      {
+        $project:{
+          _id:0
+        }
+      },
+      {
+        $sort:{
+          ratings:-1
+        }
+      }
+    ])
+    return movies;
+}
+
+
 module.exports = {
   CreateMovie,
   FindMovie,
@@ -64,7 +132,10 @@ module.exports = {
   GetAll,
   DeleteMovie,
   GetRandomMovieOrSeries,
-  loadAllMovies
+  loadAllMovies,
+  GetMoviesGroupsByRatings,
+  GetMoviesGroupsByGenre
+
 }
 
 

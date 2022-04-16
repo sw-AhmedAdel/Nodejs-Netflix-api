@@ -4,7 +4,9 @@ const {
   UpdateMovie,
   GetAll,
   DeleteMovie,
-  GetRandomMovieOrSeries
+  GetRandomMovieOrSeries,
+  GetMoviesGroupsByRatings,
+  GetMoviesGroupsByGenre
 } = require('../../models/movie.models');
 const appError = require('../../handelErros/class.handel.errors');
 const filterFeaturs =require('../../services/class.filter');
@@ -32,7 +34,7 @@ async function httpGelAll (req ,res ,next) {
   return res.status(200).json({
     status:'success',
     resulta:movies.length ,
-    data: movies
+    data: movies//.reverse()
   })
 }
 
@@ -83,7 +85,7 @@ async function httpGetSingleMovie (req ,res ,next) {
 }
 
 async function httpGetRandomMovieOrSeries (req ,res ,next) {
-  const type = req.query
+  const type = req.query.type
   const movie = await GetRandomMovieOrSeries(type);
   return res.status(200).json({
     status:'success',
@@ -91,11 +93,30 @@ async function httpGetRandomMovieOrSeries (req ,res ,next) {
   })
 }
 
+async function httpGetMoviesGroupsByRatings(req , res,next){
+  const movies = await GetMoviesGroupsByRatings();
+  return res.status(200).json({
+    status:'success',
+    data: movies
+  })
+} 
+
+async function httpGetMoviesGroupsByGenre(req , res,next){
+  const movies = await GetMoviesGroupsByGenre();
+  return res.status(200).json({
+    status:'success',
+    data: movies
+  })
+} 
+
 module.exports = {
   httpCreateMovie,
   httpGelAll,
   httpUpdateMovie,
   httpDeleteMovie,
   httpGetSingleMovie,
-  httpGetRandomMovieOrSeries
+  httpGetRandomMovieOrSeries,
+  httpGetMoviesGroupsByRatings,
+  httpGetMoviesGroupsByGenre
+  
 }

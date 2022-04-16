@@ -11,7 +11,9 @@ const {
   httpUpdateMovie,
   httpDeleteMovie,
   httpGetSingleMovie,
-  httpGetRandomMovieOrSeries
+  httpGetRandomMovieOrSeries,
+  httpGetMoviesGroupsByRatings,
+  httpGetMoviesGroupsByGenre,
 } = require('./movie.controller');
 
 const {
@@ -26,8 +28,8 @@ movieRoute.get('/' , catchAsync(httpGelAll));
 movieRoute.get('/get/:movieid', catchAsync(httpGetSingleMovie));
 movieRoute.get('/top/movies' , getTopMovies, catchAsync(httpGelAll));
 movieRoute.get('/top/serios' , getTopSerios, catchAsync(httpGelAll));
-
-
+movieRoute.get('/group/ratings', catchAsync(httpGetMoviesGroupsByRatings));
+movieRoute.get('/group/genre', catchAsync(httpGetMoviesGroupsByGenre));
 //////////// authorized
 movieRoute.use(authorized('admin'));
 
