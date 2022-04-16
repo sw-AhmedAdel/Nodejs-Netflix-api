@@ -8,7 +8,11 @@ const {startMongo} = require('./services/mongo');
 const {loadAllMovies} = require('./models/movie.models');
 const User = require('./models/user.mongo');
 const Movie = require('./models/movie.mongo')
-
+/**
+ *  1 fnhsi the video
+ *  make the upload images
+ *  make my favorte movies > delete and create
+ */
 async function startServer () {
  
   await startMongo();

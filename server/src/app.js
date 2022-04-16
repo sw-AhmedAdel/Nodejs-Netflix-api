@@ -21,7 +21,7 @@ app.use(mongoSanitize());
 app.use(xss());
 
 app.use(hpp({ // 
-  whitelist:['title,genre ,rating']
+  whitelist:['title,genre ,rating','year']
 }))
 
 app.use(express.json());

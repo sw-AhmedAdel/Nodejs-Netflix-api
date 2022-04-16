@@ -57,5 +57,11 @@ const movieSchema = new mongoose.Schema({
   toObject:{virtuals:true}
 })
 
+movieSchema.index({genre:1 , year:1 , rating: 1});
+movieSchema.index({genre: 1});
+movieSchema.index({year:1})
+movieSchema.index({genre: 1 , year:1});
+
+
 const Movie = mongoose.model('Movie' ,  movieSchema);
 module.exports =Movie;
