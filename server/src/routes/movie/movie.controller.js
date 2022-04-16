@@ -12,13 +12,14 @@ const filterFeaturs =require('../../services/class.filter');
 async function httpCreateMovie (req ,res ,next) {
   const movie = req.body;
   const newMovie = await CreateMovie(movie);
-  return res.status(200).json({
+  return res.status(201).json({
     status:'success',
     data: newMovie
   })
 }
 
 async function httpGelAll (req ,res ,next) {
+ 
   const filter = {...req.query};
   const execludeFileds = ['page','sort','limit'];
   execludeFileds.forEach((el) => delete filter[el]);
@@ -30,6 +31,7 @@ async function httpGelAll (req ,res ,next) {
   const movies = await GetAll(finalFilter , sortBy , limit , skip);
   return res.status(200).json({
     status:'success',
+    resulta:movies.length ,
     data: movies
   })
 }

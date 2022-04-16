@@ -14,13 +14,25 @@ const {
   httpGetRandomMovieOrSeries
 } = require('./movie.controller');
 
+const {
+  getTopMovies,
+  getTopSerios
+} =require('../../services/query');
+
+/////////// authenticate
 movieRoute.use(catchAsync(authenticate));
+
 movieRoute.get('/' , catchAsync(httpGelAll));
 movieRoute.get('/get/:movieid', catchAsync(httpGetSingleMovie));
+movieRoute.get('/top/movies' , getTopMovies, catchAsync(httpGelAll));
+movieRoute.get('/top/serios' , getTopSerios, catchAsync(httpGelAll));
 
+
+//////////// authorized
 movieRoute.use(authorized('admin'));
+
 movieRoute.post('/', catchAsync(httpCreateMovie));
-movieRoute.delete('/update/:movieid', catchAsync(httpUpdateMovie));
+movieRoute.patch('/update/:movieid', catchAsync(httpUpdateMovie));
 movieRoute.delete('/delete/:movieid', catchAsync(httpDeleteMovie));
 movieRoute.get('/random' , catchAsync( httpGetRandomMovieOrSeries));
 

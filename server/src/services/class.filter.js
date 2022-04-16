@@ -12,8 +12,8 @@ class filterFeaturs {
   }
 
   sortBy(){
-    if(this.query.sortBy) {
-      return this.query.sortBy.split(',').join(' ');
+    if(this.query.sort) {
+      return this.query.sort.split(',').join(' ');
     }
     return 'year'
   }

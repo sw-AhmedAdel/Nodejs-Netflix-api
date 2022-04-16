@@ -1,6 +1,11 @@
-const { updateMany } = require('./movie.mongo');
 const Movie = require('./movie.mongo');
+const fs = require('fs')
+const path = require('path');
 
+async function loadAllMovies (){
+  const movies = JSON.parse(fs.readFileSync(path.join(__dirname,'..','..','data', 'movies.json')));
+  await Movie.create(movies);
+}
 
 async function GetAll(finalFilter , sortBy , limit , skip){
   return await Movie.find(finalFilter)
@@ -59,6 +64,7 @@ module.exports = {
   GetAll,
   DeleteMovie,
   GetRandomMovieOrSeries,
+  loadAllMovies
 }
 
 
