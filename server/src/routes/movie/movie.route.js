@@ -14,6 +14,8 @@ const {
   httpGetRandomMovieOrSeries,
   httpGetMoviesGroupsByRatings,
   httpGetMoviesGroupsByGenre,
+  uploadMoviesImages,
+  resizeMoviesImages
 } = require('./movie.controller');
 
 const {
@@ -34,7 +36,7 @@ movieRoute.get('/group/genre', catchAsync(httpGetMoviesGroupsByGenre));
 movieRoute.use(authorized('admin'));
 
 movieRoute.post('/', catchAsync(httpCreateMovie));
-movieRoute.patch('/update/:movieid', catchAsync(httpUpdateMovie));
+movieRoute.patch('/update/:movieid', uploadMoviesImages , catchAsync(resizeMoviesImages), catchAsync(httpUpdateMovie));
 movieRoute.delete('/delete/:movieid', catchAsync(httpDeleteMovie));
 movieRoute.get('/random' , catchAsync( httpGetRandomMovieOrSeries));
 

@@ -13,9 +13,7 @@ const movieSchema = new mongoose.Schema({
     type:String,
     required:[true,'Movie must has a cover image'],
   },
-  imageTitle: {
-    type:String,
-  },
+
   movieImage:{
     type: String,
     required:[true,'Movie must has an Image'],
