@@ -9,6 +9,7 @@ const {
 } = require('../../models/user.models');
 const sendCookieVieRespond = require('../../authController/cookie');
 const appError = require('../../handelErros/class.handel.errors');
+const {FindMovie} = require('../../models/movie.models');
 
 function filterUser (obj , ...arr) {
   const filter = {};
@@ -119,6 +120,41 @@ async function httpGetUserStats(req ,res ,next) {
   })
 }
 
+async function httpAddMovieToMyFav (req ,res ,next) {
+  const {movieid} = req.params;
+  const movie = await FindMovie({
+    _id : movieid
+  })
+  if(!movie) {
+    return next (new appError('Movie is not extis', 400));
+  }
+  req.user.myFav = [...req.user.myFav , movieid] ;
+  await req.user.save();
+  return res.status(200).json({
+    status:'success',
+    messgae:`${movie.title} has been added `
+  })
+ 
+}
+
+async function httpDeleteMovieFromMyFav(req ,res ,next) {
+  const {movieid} = req.params;
+  req.user.myFav=req.user.myFav.filter((mov) => mov._id.toString() !== movieid.toString());
+  await req.user.save();
+  return res.status(200).json({
+    status:'success',
+  })
+
+}
+
+async function httpGetMyFavMovie(req ,res ,next) {
+  const movies = req.user.myFav;
+  return res.status(200).json({
+    status:'sucess',
+    data:movies,
+  })
+}
+
 module.exports = {
   httpCreateUser,
   httpDeleteUser,
@@ -127,5 +163,8 @@ module.exports = {
   httpGetSingleUser,
   httpUpdateUser,
   httpLoginUser,
-  httpGetUserStats
+  httpGetUserStats,
+  httpAddMovieToMyFav,
+  httpDeleteMovieFromMyFav,
+  httpGetMyFavMovie
 }

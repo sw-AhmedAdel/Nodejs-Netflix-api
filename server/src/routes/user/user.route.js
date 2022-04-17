@@ -14,6 +14,9 @@ const {
   httpUpdateUser,
   httpLoginUser,
   httpGetUserStats,
+  httpAddMovieToMyFav,
+  httpDeleteMovieFromMyFav,
+  httpGetMyFavMovie
 } = require('./user.controller');
 
 const {
@@ -33,6 +36,9 @@ userRoute.get('/get/user/:userid' , catchAsync( httpGetSingleUser));
 userRoute.patch('/updateme' , catchAsync( httpUpdateUser));
 userRoute.patch('/update/my/password', catchAsync(httpUpdatePassword));
 userRoute.delete('/deleteme' ,  catchAsync(httpDeleteUser));
+userRoute.post('/add/fav/:movieid' , catchAsync(httpAddMovieToMyFav));
+userRoute.delete('/remove/fav/:movieid' , catchAsync(httpDeleteMovieFromMyFav));
+userRoute.get('/myfav', catchAsync(httpGetMyFavMovie));
 userRoute.get('/logout' ,catchAsync( httpLogout));
 
 userRoute.use(authorized('admin'));

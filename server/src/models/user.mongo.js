@@ -43,11 +43,10 @@ const userScheam = new mongoose.Schema({
   ,
   myFav:[
     {
-      fav:{
         type : mongoose.Schema.Types.ObjectId,
         required:true,
         ref:'Movie',
-      }
+      
     }
   ]
   ,
@@ -156,6 +155,14 @@ userScheam.pre('save' , async function(next){
 userScheam.pre(/^find/ , function(next) {
   this.find({active : {$ne : false}})
   next();
+})
+
+userScheam.pre(/^find/ , function(next) {
+  this.populate({
+   path:'myFav',
+   select:'title imageCover rating'
+  })
+  next()
 })
 
 const User=  mongoose.model('User' , userScheam);
